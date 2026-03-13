@@ -4,4 +4,6 @@ backups/
 services/
 scripts/
 *.db
+.idea/
+*.iml
 .env
