@@ -1,0 +1,7 @@
+*.log
+*.tmp
+backups/
+services/
+scripts/
+*.db
+.env
