@@ -94,8 +94,8 @@ services:
     image: postgres:17.2-alpine3.21
     container_name: bank-auth-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: auth_db
     ports:
       - "5436:5432"
@@ -107,7 +107,7 @@ services:
 
   auth-services:
     build:
-      context: ./auth-services
+      context: ./services/auth-services
       dockerfile: Dockerfile
     container_name: bank-auth-services
     ports:
@@ -125,8 +125,8 @@ services:
     image: postgres:17.2-alpine3.21
     container_name: bank-user-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: user_db
     ports:
       - "5433:5432"
@@ -142,8 +142,8 @@ services:
       context: ./user-db-couchbase
     container_name: bank-user-couchbase
     environment:
-      - COUCHBASE_ADMINISTRATOR_USERNAME=admin
-      - COUCHBASE_ADMINISTRATOR_PASSWORD=password
+      - COUCHBASE_ADMINISTRATOR_USERNAME=${COUCHBASE_USERNAME}
+      - COUCHBASE_ADMINISTRATOR_PASSWORD=${COUCHBASE_PASSWORD}
     ports:
       - "8091:8091"
       - "8093:8093"
@@ -180,12 +180,12 @@ services:
     command: ["./wait-for-it.sh", "user-db:5432", "--timeout=300", "--", "./wait-for-it.sh", "user-db-couchbase:8091", "--timeout=300", "--", "java", "-jar", "app.jar"]
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://user-db:5432/user_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 1234
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_REDIS_HOST: redis
       SPRING_COUCHBASE_CONNECTION_STRING: couchbase://user-db-couchbase
-      SPRING_COUCHBASE_USERNAME: admin
-      SPRING_COUCHBASE_PASSWORD: password
+      SPRING_COUCHBASE_USERNAME: ${COUCHBASE_USERNAME}
+      SPRING_COUCHBASE_PASSWORD: ${COUCHBASE_PASSWORD}
       SPRING_COUCHBASE_BUCKET_NAME: user_services_bucket
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     mem_limit: 256m
@@ -194,8 +194,8 @@ services:
     image: postgres:17.2-alpine3.21
     container_name: bank-location-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: country_db
     ports:
       - "5434:5432"
@@ -231,8 +231,8 @@ services:
     image: postgres:17.2-alpine3.21
     container_name: bank-compliance-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: compliance_db
     ports:
       - "5435:5432"
